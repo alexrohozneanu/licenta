@@ -4,6 +4,7 @@ import numpy as np
 import cv2
 import copy
 import rotatingandtranslating as rt
+import dynamicroiextraction as dre
 from keras.models import model_from_json
 coordinates=[]
 for i in range(0,760,10):
@@ -19,122 +20,7 @@ for i in range(0,240,10):
     coordinates.append((7,256-i))
 coordinates.append((13,13))
 rot=rt.rotAndTrans(img)
-roi=np.zeros((84,100),dtype="uint8")
-i=0
-m=0
-n=0
-for j in range(20,780):
-    while (rot[i][j]<=15):
-        i+=1
-    roi[m][n]=rot[i][j]
-    roi[m+1][n]=rot[i+1][j]
-    roi[m+2][n]=rot[i+2][j]
-    roi[m+3][n]=rot[i+3][j]
-    n+=1
-    if(n%100==0):
-        n=0
-        m+=4
-    i=0
-i=274
-for j in range(20,780):
-    while(rot[i][j]<=15):
-        i-=1
-    roi[m][n] = rot[i][j]
-    roi[m + 1][n] = rot[i - 1][j]
-    roi[m + 2][n] = rot[i - 2][j]
-    roi[m + 3][n] = rot[i - 3][j]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-    i=274
-j=0
-for i in range(20,260):
-    while(rot[i][j]<=15):
-        j+=1
-    roi[m][n] = rot[i][j]
-    roi[m + 1][n] = rot[i][j+1]
-    roi[m + 2][n] = rot[i][j+2]
-    roi[m + 3][n] = rot[i][j+3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-    j=0
-j=798
-for i in range(20,260):
-    while(rot[i][j]<=15):
-        j-=1
-    roi[m][n] = rot[i][j]
-    roi[m + 1][n] = rot[i][j-1]
-    roi[m + 2][n] = rot[i][j-2]
-    roi[m + 3][n] = rot[i][j-3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-    j=798
-#corners
-#up left
-i=0
-j=0
-while(rot[i][j]<=15):
-    i+=1
-    j+=1
-for k in range(-7,7):
-    roi[m][n] = rot[i-k][j+k]
-    roi[m + 1][n] = rot[i-k+1][j+k+1]
-    roi[m + 2][n] = rot[i -k+ 2][j+k+2]
-    #roi[m + 3][n] = rot[i -k+ 3][j+k+3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-#down right
-i=279
-j=799
-while(rot[i][j]<=15):
-    i-=1
-    j-=1
-for k in range(-6,6):
-    roi[m][n] = rot[i-k][j+k]
-    roi[m + 1][n] = rot[i -k- 1][j+k-1]
-    roi[m + 2][n] = rot[i -k- 2][j+k-2]
-    #roi[m + 3][n] = rot[i -k- 3][j+k-3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-#up right
-i=0
-j=799
-while(rot[i][j]<=15):
-    i+=1
-    j-=1
-for k in range(-7,7):
-    roi[m][n] = rot[i-k][j-k]
-    roi[m + 1][n] = rot[i-k+1][j-k-1]
-    roi[m + 2][n] = rot[i -k+ 2][j-k-2]
-   # roi[m + 3][n] = rot[i -k+ 3][j-k-3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
-#down left
-i=279
-j=0
-while(rot[i][j]<=15):
-    i-=1
-    j+=1
-for k in range(-7,7):
-    roi[m][n] = rot[i-k][j-k]
-    roi[m + 1][n] = rot[i -k- 1][j-k+1]
-    roi[m + 2][n] = rot[i-k-2][j-k+2]
-   # roi[m + 3][n] = rot[i-k-3][j-k+3]
-    n += 1
-    if (n % 100 == 0):
-        n = 0
-        m += 4
+roi=dre.roiExtraction(rot)
 with open('faultrec_architecture.json', 'r') as f:
     model = model_from_json(f.read())
 # Load weights into the new model
