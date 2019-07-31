@@ -1,6 +1,6 @@
 import numpy as np
 import cv2
-for y in range(4500):
+def roiExtraction:
         img=cv2.imread(r"D:\Facultate\Licenta\TestSet\test"+str(y)+".jpg",cv2.IMREAD_GRAYSCALE)
         img=cv2.resize(img,(800,280))
         roi=np.zeros((84,100),dtype="uint8")
@@ -123,6 +123,6 @@ for y in range(4500):
             if (n % 100 == 0):
                 n = 0
                 m += 4
-        cv2.imwrite(r"D:\Facultate\Licenta\RoiTestSet\troi"+str(y)+".jpg",roi)
+       return roi
 
 
